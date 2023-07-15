@@ -1,0 +1,14 @@
+---
+- name: "install etcd"
+  become: yes
+  apt:
+    name: ['etcd']
+    update_cache: yes
+    state: present
+  tags: packages
+
+- name: Start and enable service
+  ansible.builtin.service:
+    name: etcd
+    state: started
+    enabled: true

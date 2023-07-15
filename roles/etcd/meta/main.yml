@@ -1,0 +1,7 @@
+galaxy_info:
+  author: Alireza Ehsani
+  description: install and configs etcd 
+  company: Arsh (amid rayaneh sharif)
+  # - CC-BY-4.0
+  license: license (GPL-2.0-or-later, MIT, etc)
+  min_ansible_version: 2.8

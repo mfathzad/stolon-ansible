@@ -1,0 +1,29 @@
+[Unit]
+Description=stolon-keeper
+ 
+[Service]
+Type=simple
+Restart=always
+RestartSec=5s
+LimitNOFILE=40000
+TimeoutStartSec=0
+
+Environment="PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-{{ postgresql_version }}/bin"
+Environment="STKEEPER_CLUSTER_NAME={{ stolon_cluster_name }}"
+Environment="STKEEPER_STORE_BACKEND={{ stolon_store_backend }}"
+Environment="STKEEPER_STORE_ENDPOINTS={{ stolon_store_endpoints }}"
+Environment="STKEEPER_UID={{ stolon_keeper_name }}"
+Environment="STKEEPER_DATA_DIR=/home/{{ stolon_sentinel_user }}/data/"
+Environment="STKEEPER_PG_LISTEN_ADDRESS={{ stolon_postgres_listen }}"
+Environment="STKEEPER_PG_PORT={{ stolon_postgres_port }}"
+Environment="STKEEPER_PG_REPL_USERNAME={{ stolon_replication_user }}"
+Environment="STKEEPER_PG_REPL_PASSWORDFILE={{ stolon_repl_passwordfile }}"
+Environment="STKEEPER_PG_SU_PASSWORDFILE={{ stolon_su_passwordfile }}"
+Environment="STKEEPER_PG_BIN_PATH={{ postgresql_bin_path }}"
+User={{ stolon_sentinel_user }}
+
+ExecStart={{ stolon_unarchive_prefix }}/bin/stolon-keeper
+
+[Install]
+WantedBy=multi-user.target
+
