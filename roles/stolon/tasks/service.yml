@@ -1,5 +1,7 @@
 
 - name: Create stolon-sentinel service file
+  become: yes
+  become_method: sudo
   template: 
       src: stolon-sentinel.service.j2
       dest: /etc/systemd/system/stolon-sentinel.service

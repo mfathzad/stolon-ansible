@@ -13,6 +13,8 @@
       group: postgres
 
 - name: Create postgres pass file
+  become: yes
+  become_method: sudo
   template: 
       src: postgres.pf.j2
       dest: "{{ stolon_su_passwordfile }}"
@@ -20,6 +22,8 @@
       group: postgres
 
 - name: Create replication pass file
+  become: yes
+  become_method: sudo
   template: 
       src: replication.pf.j2
       dest: "{{ stolon_repl_passwordfile }}"

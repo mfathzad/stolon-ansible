@@ -5,33 +5,47 @@
   changed_when: false
 
 - block: 
+
     - name: download stolon
       get_url: 
         url: "https://github.com/sorintlab/stolon/releases/download/v{{ stolon_version }}/stolon-v{{ stolon_version }}-linux-amd64.tar.gz" 
         dest: /tmp/stolon-v{{ stolon_version }}-linux-amd64.tar.gz
 
     - name: Remove old installation of Stolon
+      become: yes
+      become_method: sudo
       file:
         path: "{{ stolon_unarchive_prefix }}"
         state: absent
 
     - name: Check work dir | {{ stolon_unarchive_prefix }}
+      become: yes
+      become_method: sudo
       file:
         path: "{{ stolon_unarchive_prefix }}"
         state: directory
         mode: 755
 
     - name: unpack stolon
+      become: yes
+      become_method: sudo
       unarchive: 
         copy: no 
         src: "/tmp/stolon-v{{ stolon_version }}-linux-amd64.tar.gz" 
         dest: "{{ stolon_unarchive_prefix }}"
         extra_opts: "--strip-components=1"
 
-    - name: Remove archive
-      file:
-        path: "/tmp/stolon-v{{ stolon_version }}-linux-amd64.tar.gz"
-        state: absent
+    # - name: copy stolon
+    #   become: yes
+    #   become_method: sudo
+    #   ansible.builtin.copy:
+    #     src: "/tmp/stolon-v{{ stolon_version }}/bin/stolon-sentinel"
+    #     dest: "{{ stolon_unarchive_prefix }}/bin"
+
+    # - name: Remove archive
+    #   file:
+    #     path: "/tmp/stolon-v{{ stolon_version }}-linux-amd64.tar.gz"
+    #     state: absent
 
   when: stolon_version_check is failed or stolon_version_check.stdout != stolonctl_version_target
 
