@@ -1,0 +1,2 @@
+[etcd-hosts]
+localhost ansible_connection=local ansible_host=1921.68.7.6

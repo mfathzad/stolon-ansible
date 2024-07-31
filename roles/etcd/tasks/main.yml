@@ -1,15 +1,112 @@
 ---
-- name: "Install etcd"
-  become: yes
-  apt:
-    name: etcd
-    update_cache: yes
-    state: present
-  tags: packages 
 
-- name: Start and enable etcd service
-  become: yes
-  ansible.builtin.service:
-    name: etcd
-    state: started
-    enabled: true
+
+
+
+  - name: Update APT package index
+    apt:
+        update_cache: yes
+
+  - name: Install required dependencies
+    apt:
+     name: ['wget', 'tar']
+     state: present
+
+  - name: Download etcd
+    get_url:
+     url: "https://github.com/etcd-io/etcd/releases/download/v{{ etcd_version }}/etcd-v{{ etcd_version }}-linux-amd64.tar.gz"
+     dest: "/tmp/etcd-v{{ etcd_version }}-linux-amd64.tar.gz"
+
+  - name: Extract etcd
+    unarchive:
+      src: "/tmp/etcd-v{{ etcd_version }}-linux-amd64.tar.gz"
+      dest: "/usr/local/bin/"
+      remote_src: yes
+
+  - name: Move etcd and etcdctl to /usr/local/bin
+    become: true
+    ansible.builtin.shell: mv /usr/local/bin/etcd-v{{ etcd_version }}-linux-amd64/{etcd,etcdctl}  /usr/local/bin/
+
+    args:
+       executable: /bin/bash
+
+   
+
+  - name: Create etcd user
+    user:
+     name: etcd
+     system: yes
+     shell: /sbin/nologin
+
+  - name: Create etcd data directory
+    file:
+     path: "{{ item }}"
+     state: directory
+     owner: etcd
+     group: etcd
+     mode: '0755'
+    loop:
+      - /etc/etcd
+      - /var/lib/etcd
+    tags: create_dir
+
+  - name: Create etcd systemd service file
+    template:
+      src: etcd-service.j2
+      dest: /etc/systemd/system/etcd.service
+      owner: etcd
+      group: etcd
+    # delegate_to: localhost
+    
+
+
+  - name: Reload systemd
+    systemd:
+      daemon_reload: yes
+
+  - name: Enable and start etcd service
+    become: yes
+    systemd:
+      name: etcd
+      enabled: yes
+      state: started
+    tags: start_etcd
+
+
+  - name: copy etcd file into /etc/default
+    become: yes
+    template:
+      src: etcd.j2
+      dest: /etc/default/etcd
+      owner: etcd
+      group: etcd
+    # delegate_to: localhost
+    tags: copy_etcd 
+
+
+
+
+  - name: copy etcd-compact.sh file into /opt
+    become: yes
+    template:
+      src: etcd-compact.j2
+      dest: /opt/etcd-compact.sh
+      owner: root
+      group: root
+      mode: a+x
+    # delegate_to: localhost
+    tags: copy_etcd_compact
+
+  - name: etcd-compact cronjob
+    become: yes
+    cron:
+      name: "run etcd-compact.sh"
+      user: "root"
+      minute: "0"
+      hour: "0"
+      day: "*"
+      month: "*"
+      weekday: "*"
+      job: "/bin/bash  /opt/etcd-compact.sh"
+    # delegate_to: localhost
+    tags: cron
