@@ -1,0 +1,5 @@
+- import_tasks: install_stolon.yml
+- import_tasks: service.yml
+
+
+

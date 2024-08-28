@@ -12,7 +12,7 @@ Environment="STSENTINEL_STORE_BACKEND={{ stolon_store_backend }}"
 Environment="STSENTINEL_STORE_ENDPOINTS={{ stolon_store_endpoints }}"
 User={{ stolon_sentinel_user }} 
 
-ExecStart={{ stolon_unarchive_prefix }}/bin/stolon-sentinel 
+ExecStart={{ stolon_unarchive_prefix }}/stolon-sentinel 
  
 [Install]
 WantedBy=multi-user.target

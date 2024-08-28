@@ -22,7 +22,7 @@ Environment="STKEEPER_PG_SU_PASSWORDFILE={{ stolon_su_passwordfile }}"
 Environment="STKEEPER_PG_BIN_PATH={{ postgresql_bin_path }}"
 User={{ stolon_sentinel_user }}
 
-ExecStart={{ stolon_unarchive_prefix }}/bin/stolon-keeper
+ExecStart={{ stolon_unarchive_prefix }}/stolon-keeper
 
 [Install]
 WantedBy=multi-user.target

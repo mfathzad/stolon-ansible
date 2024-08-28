@@ -1,0 +1,4 @@
+- hosts: keeper_hosts
+  roles:
+    - stolon-keeper
+    

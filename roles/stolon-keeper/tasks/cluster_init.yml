@@ -1,0 +1,13 @@
+- name: Template for init shell script
+  template:
+      src: cluster_init_command.sh.j2
+      dest: /tmp/cluster_init_command.sh
+      mode: 0555
+
+- name: Init command
+  command: /tmp/cluster_init_command.sh INIT
+  register: clu_init
+
+- debug: msg="{{ clu_init.stdout }}"
+
+- debug: msg="{{ clu_init.stderr }}"

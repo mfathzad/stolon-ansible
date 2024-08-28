@@ -1,4 +1,6 @@
 - name: Create stolon-sentinel user
+  become: yes
+  become_method: sudo
   user:
       name: "{{ stolon_sentinel_user }}"
       home: "/home/{{ stolon_sentinel_user }}"
@@ -6,6 +8,8 @@
       group: postgres
 
 - name: Change user dir permissions
+  become: yes
+  become_method: sudo
   file: 
       path: "/home/{{ stolon_sentinel_user }}"
       state: directory

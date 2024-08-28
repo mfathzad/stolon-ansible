@@ -7,14 +7,13 @@ Restart=always
 RestartSec=5s
 LimitNOFILE=40000
 TimeoutStartSec=0
-User={{ stolon_sentinel_user }}
 Environment="STPROXY_CLUSTER_NAME={{ stolon_cluster_name }}"
 Environment="STPROXY_STORE_BACKEND={{ stolon_store_backend }}"
 Environment="STPROXY_STORE_ENDPOINTS={{ stolon_store_endpoints }}"
 Environment="STPROXY_LISTEN_ADDRESS={{ stolon_proxy_listen }}"
 Environment="STPROXY_PORT={{ stolon_proxy_port }}"
 
-ExecStart={{ stolon_unarchive_prefix }}/bin/stolon-proxy 
+ExecStart={{ stolon_unarchive_prefix }}/stolon-proxy 
 
 [Install]
 WantedBy=multi-user.target

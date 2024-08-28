@@ -1,0 +1,12 @@
+# etcd variables
+etcd_listen_address: 127.0.0.1
+etcd_listen_port: 2379
+
+# stolon variables
+stolon_version: 0.17.0
+stolon_cluster_name: test
+stolon_store_backend: etcdv3
+stolon_store_endpoints: "{{ etcd_listen_address }}:{{ etcd_listen_port }}"
+stolon_proxy_listen: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+stolon_proxy_port: 25432
+stolon_unarchive_prefix: "/usr/stolon"

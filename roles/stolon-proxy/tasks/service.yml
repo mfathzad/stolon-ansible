@@ -1,0 +1,25 @@
+- name: Set execute mode for proxy
+  ansible.builtin.file:
+    path: "{{ stolon_unarchive_prefix }}/stolon-proxy"
+    mode: "u+x,g+x,o+x"
+
+- name: Create stolon-sentinel service file
+  become: yes
+  become_method: sudo
+  template: 
+      src: stolon-proxy.service.j2
+      dest: /etc/systemd/system/stolon-proxy.service
+      mode: 0444
+  notify: restart stolon-proxy
+
+
+- name: Systemd | stolon-proxy
+  become: yes
+  become_method: sudo
+  systemd:
+      name: stolon-proxy
+      daemon_reload: yes
+      enabled: yes
+      state: started
+
+- meta: flush_handlers

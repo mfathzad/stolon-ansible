@@ -1,3 +1,17 @@
+- name: Set execute mode for sentinel
+  ansible.builtin.file:
+    path: "{{ stolon_unarchive_prefix }}/stolon-sentinel"
+    mode: "u+x,g+x,o+x"
+
+- name: Set execute mode for keeper
+  ansible.builtin.file:
+    path: "{{ stolon_unarchive_prefix }}/stolon-keeper"
+    mode: "u+x,g+x,o+x"
+
+- name: Set execute mode for stolonctl
+  ansible.builtin.file:
+    path: "{{ stolon_unarchive_prefix }}/stolonctl"
+    mode: "u+x,g+x,o+x"
 
 - name: Create stolon-sentinel service file
   become: yes
@@ -9,34 +23,27 @@
   notify: restart stolon-sentinel
 
 - name: Systemd | stolon-sentinel
+  become: yes
+  become_method: sudo
   systemd:
       daemon_reload: yes
       enabled: yes
       state: started
       name: stolon-sentinel
 
-- name: Create stolon-proxy service file
-  template: 
-      src: stolon-proxy.service.j2
-      dest: /etc/systemd/system/stolon-proxy.service
-      mode: 0444
-  notify: restart stolon-proxy
-
-- name: Systemd | stolon-proxy
-  systemd:
-      daemon_reload: yes
-      enabled: yes
-      state: started
-      name: stolon-proxy
-
 - name: Create stolon-keeper service file
+  become: yes
+  become_method: sudo
   template: 
       src: stolon-keeper.service.j2
       dest: /etc/systemd/system/stolon-keeper.service
       mode: 0444
   notify: restart stolon-keeper
 
+
 - name: Systemd | stolon-keeper
+  become: yes
+  become_method: sudo
   systemd:
       name: stolon-keeper
       daemon_reload: yes

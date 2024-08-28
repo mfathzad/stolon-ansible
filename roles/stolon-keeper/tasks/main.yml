@@ -1,0 +1,9 @@
+- import_tasks: env.yml
+#- import_tasks: install_postgres.yml
+- import_tasks: install_stolon.yml
+- import_tasks: user.yml
+- import_tasks: service.yml
+- import_tasks: cluster_init.yml
+
+
+
