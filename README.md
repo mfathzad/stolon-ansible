@@ -11,34 +11,58 @@ including:
 * stolon-keeper
 * stolon-proxy
 
-
-
-
-* create a directory in /var/lib/postgres/backup
-* create virtualenv in backup directory:
-```
-virtualenv -p python3 venv
-```
-
-* activate venv
-```
-source venv/bin/activate
-```
-
-* install dependencies
-```
-pip install -r requirements.txt
-apt install python3-dotenv
-```
-* put this reposirory content in **/var/lib/postgres/backup**
-
-* edit .env file 
-
-* add this command to crontab 
-```
-0 0 * * * /var/lib/postgresql/backup/venv/bin/python /var/lib/postgresql/backup/backup.py >> /var/lib/postgresql/backup/backup.logs
+# how to use it?
+first of all, you need to install ansible and ansible-playbook 
 
 ```
+sudo apt update
+sudo apt install ansible
+```
+## roles
+there is three role, first one is for installing and configuring etcd and the second one, dose the same for stolon keeper and the third one is for stolon-proxy.
 
-* if you have media files and you also wanna backup them, defind media path in .env file:  **LOCAL_MEDIA_PATH**
-and you should call **upload_media_to_minio** 
+
+### etcd role
+to install and configure etcd, first of all put your host ip and username of your etcd host in inventory.ini in [etcd-host] section:
+```
+[etcd_host]
+etcd ansible_host=<etcd-ip>  ansible_user=<etcd-user>
+```
+
+then, put your enviroments variables on roles/etcd/vars/main.yml
+```
+etcd_version: '3.5.15'
+etcd_ip_address: '<etcd-ip>'
+```
+
+### stolon keeper role
+same as etcd, first you need to change inventory.ini values according to your setup.
+set your stolon-keeper hosts:
+
+```
+[keeper_hosts]
+keeper_1 ansible_host=<keeper-ip> ansible_user=<username>
+
+```
+then you need to put your enviroments variables in roles/stolon-keeper/vars/main.yml.
+
+
+### stolon proxy role
+change inventory.ini values according to your setup.
+set your stolon-proxy hosts:
+
+```
+[proxy_hosts]
+proxy_1 ansible_host=<proxy_host-ip>  ansible_user=<username>
+```
+
+then you need to put your enviroments variables in roles/stolon-proxy/vars/main.yml.
+
+# run playbook
+you can run this playbook after configuring variables and inventory.ini
+
+```
+ansible-playbook -i inventory.ini etcd.yml --ask-pass --ask-become-pass
+ansible-playbook -i inventory.ini install_keepers.yml --ask-pass --ask-become-pass
+ansible-playbook -i inventory.ini install_proxy.yml --ask-pass --ask-become-pass
+```
